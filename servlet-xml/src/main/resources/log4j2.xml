@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="60">
+    <Properties>
+        <property name="dirPath">D://var</property>
+        <property name="fileName">info.log</property>
+        <property name="pattern">%d{HH:mm:ss.SSS} [%-5level] [%-thread] %class %method %line %msg%n</property>
+    </Properties>
+    <Appenders>
+        <!-- 控制台输出 -->
+        <console name="console" target="SYSTEM_ERR">
+            <PatternLayout pattern="${pattern}"/>
+        </console>
+        <!-- 根据大小、时间生成日志文件 -->
+        <RollingFile name="rollingFile"
+                     fileName="${dirPath}/${fileName}"
+                     filePattern="${dirPath}/$${date:yyyy-MM-dd}/info-%d{yyyy-MM-dd}-%i.log.gz">
+            <!-- 日志输出过滤 -->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!-- 日志消息格式 -->
+            <PatternLayout pattern="${pattern}"/>
+            <!-- Policies :日志滚动策略-->
+            <Policies>
+                <!-- 在系统启动时，触发拆分规则，产生一个日志文件 -->
+                <OnStartupTriggeringPolicy/>
+                <!-- 按照文件的大小进行拆分 -->
+                <SizeBasedTriggeringPolicy size="10KB"/>
+                <!-- 时间滚动策略,默认0点小时产生新的文件 -->
+                <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
+            </Policies>
+            <!-- 在同一目录下，文件的个数限制（默认7个），如果超出了设置的数值，则根据时间进行覆盖，新的覆盖旧的规则-->
+            <DefaultRolloverStrategy max="3"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <root level="all">
+            <appender-ref ref="console"/>
+<!--            <appender-ref ref="rollingFile"/>-->
+        </root>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="INFO" scanPeriod="60 seconds" debug="true">
+    <contextName>logback</contextName>
+    <!-- 通用属性 -->
+    <property name="logDir" value="D://logs"></property>
+    <property name="pattern" value="%d{HH:mm:ss} [%5level] --- [%9thread] %-15logger %method %line %m%n"></property>
+
+    <!-- 输出到控制台 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 回滚文件 根据大小、日期拆分日志文件 -->
+    <appender name="rolling" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logDir}/file.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>${pattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- 回滚策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logDir}/demo.%d{yyyy-MM-dd_HH}%i.log.gz</fileNamePattern>
+            <maxFileSize>1MB</maxFileSize>
+            <maxHistory>5</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 配置异步日志 -->
+<!--    <appender name="asyncAppender" class="ch.qos.logback.classic.AsyncAppender">-->
+<!--        <appender-ref ref="console"/>-->
+<!--    </appender>-->
+
+    <!-- 对各个日志配置 -->
+    <logger name="noob" level="debug" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="org" level="info" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="ch.qos" level="error" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+
+    <root level="debug">
+        <appender-ref ref="console"/>
+        <!--        <appender-ref ref="rolling"/>-->
+    </root>
+</configuration>
